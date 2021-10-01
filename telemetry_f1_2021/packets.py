@@ -7,6 +7,7 @@ https://forums.codemasters.com/topic/
 
 import ctypes
 import json
+from enum import Enum
 
 import logging
 
@@ -755,3 +756,13 @@ HEADER_FIELD_TO_PACKET_TYPE = {
     (2021, 1, 10): PacketCarDamageData,
     (2021, 1, 11): PacketSessionHistoryData,
 }
+
+
+class Tyre(Enum):
+    RL = 0
+    RR = 1
+    FL = 2
+    FR = 3
+
+
+TYRES = [Tyre.RL, Tyre.RR, Tyre.FL, Tyre.FR]
