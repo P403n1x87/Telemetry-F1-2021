@@ -98,7 +98,11 @@ class PacketHandler:
         if self.motion_data is None:
             return
 
-        data = packet.m_car_telemetry_data[_player_index(packet)].to_dict()
+        try:
+            data = packet.m_car_telemetry_data[_player_index(packet)].to_dict()
+        except IndexError:
+            return
+
         data.update(self.motion_data)
         self.motion_data = None
 
@@ -109,7 +113,11 @@ class PacketHandler:
         self.write(self.lap, data)
 
     def handle_car_status_data(self, packet):
-        data = packet.m_car_status_data[_player_index(packet)].to_dict()
+        try:
+            data = packet.m_car_status_data[_player_index(packet)].to_dict()
+        except IndexError:
+            return
+
         if self.tyre is None:
             self.tyre = {16: "Soft", 17: "Medium", 18: "Hard", 7: "Inter", 8: "Wet"}[
                 data["m_visual_tyre_compound"]
@@ -135,7 +143,10 @@ class PacketHandler:
         self.live(data)
 
     def handle_lap_data(self, packet):
-        data = packet.m_lap_data[_player_index(packet)]
+        try:
+            data = packet.m_lap_data[_player_index(packet)]
+        except IndexError:
+            return
 
         if data.m_sector != self.sector:
             self.sector = data.m_sector
@@ -165,7 +176,10 @@ class PacketHandler:
         self.lap = data.m_current_lap_num
 
     def handle_motion_data(self, packet):
-        self.motion_data = packet.m_car_motion_data[_player_index(packet)].to_dict()
+        try:
+            self.motion_data = packet.m_car_motion_data[_player_index(packet)].to_dict()
+        except IndexError:
+            return
 
     def _noop(self, packet):
         # print(f"Unhandled packet type {packet.__class__}")
