@@ -1,0 +1,13 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+telemetry-f1-2021 = {path = "."}
+influxdb-client = {extras = ["ciso"], version = "*"}
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
