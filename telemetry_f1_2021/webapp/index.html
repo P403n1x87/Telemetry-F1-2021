@@ -26,6 +26,13 @@
         const sector1 = document.getElementById("s1")
         const sector2 = document.getElementById("s2")
         const sector3 = document.getElementById("s3")
+        const tyreLabel = document.getElementById("tyre-label")
+        const tyreCircle = document.getElementById("tyre-circle")
+        const tyreAge = document.getElementById("tyre-age")
+
+        tyreCircle.setAttribute("class", "tyre-none");
+        tyreLabel.innerHTML = "";
+        tyreAge.innerHTML = "";
 
         let formatSector = function (time) {
             let ms = time % 1000
@@ -59,6 +66,13 @@
                 case "sector_3_ms":
                     sector3.innerHTML = formatSector(data[d]._value);
                     c++;
+                    break;
+                case "tyre_compound":
+                    tyreLabel.innerHTML = data[d]._value.substring(0, 1);
+                    tyreCircle.setAttribute("class", "tyre-" + data[d]._value.toLowerCase());
+                    break;
+                case "tyre_age":
+                    tyreAge.innerHTML = data[d]._value + (data[d]._value == 1 ? " LAP" : " LAPS");
                     break;
             }
         }
@@ -158,7 +172,8 @@
             `import "influxdata/influxdb/schema"
             schema.measurements(bucket: "f1-2021-telemetry")`, {
             next(row, tableMeta) {
-                data.add(tableMeta.toObject(row)._value.substring(0, 16))
+                if (tableMeta.toObject(row)._value != "live")
+                    data.add(tableMeta.toObject(row)._value.substring(0, 16))
             },
             error(error) {
                 log('QUERY FAILED', error)
@@ -226,6 +241,18 @@
                             <div class="p-1 text-center font-bold" id="s3"></div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="p-1 text-center flex-col">
+                <div class="flex-grow-0 flex-col">
+                    <div class="p-1 text-center font-bold" id="lap-label">TYRE</div>
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 160 160" height="160" width="160">
+                        <g>
+                            <circle style="fill:none;stroke-width:12;" class="tyre-none" id="tyre-circle" cx="80" cy="80" r="48" />
+                            <text x="80" y="104" style="font-weight:bold;font-size:64px;font-family:sans-serif;fill:#fff;" id="tyre-label" text-anchor="middle"></text>
+                        </g>
+                    </svg>
+                    <span id="tyre-age"></span>
                 </div>
             </div>
         </div>

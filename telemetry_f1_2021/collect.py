@@ -5,10 +5,12 @@ from influxdb_client import WritePrecision, InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 from telemetry_f1_2021.packets import (
+    PacketCarStatusData,
     PacketCarTelemetryData,
     PacketLapData,
     PacketMotionData,
     PacketSessionData,
+    PacketCarDamageData,
     TYRES,
 )
 from telemetry_f1_2021.listener import TelemetryListener
@@ -32,6 +34,8 @@ _HANDLERS = {
         PacketLapData,
         PacketMotionData,
         PacketSessionData,
+        PacketCarStatusData,
+        PacketCarDamageData,
     ]
 }
 
@@ -57,15 +61,30 @@ class PacketHandler:
         self.sectors = [0, 0, 0]
         self.motion_data = None
         self.session_id = None
+        self.tyre = None
 
     def init_session(self):
         self.session = datetime.now().strftime('%Y-%m-%d@%H:%M')
 
+    def on_new_lap(self):
+        self.tyre = None
+        self.sector = 0
+        self.sectors[:] = [0, 0, 0]
+
     def write(self, lap, fields):
-        if self.session is None:
+        if self.session is None or not lap:
             return
 
         p = Point(f"{self.session}-{lap:002}")
+        p._fields.update(fields)
+        p.time(datetime.utcnow(), WritePrecision.MS)
+        self.sink.write(bucket=BUCKET, record=p)
+
+    def live(self, fields):
+        if self.session is None:
+            return
+
+        p = Point("live")
         p._fields.update(fields)
         p.time(datetime.utcnow(), WritePrecision.MS)
         self.sink.write(bucket=BUCKET, record=p)
@@ -89,6 +108,32 @@ class PacketHandler:
 
         self.write(self.lap, data)
 
+    def handle_car_status_data(self, packet):
+        data = packet.m_car_status_data[_player_index(packet)].to_dict()
+        if self.tyre is None:
+            self.tyre = {16: "Soft", 17: "Medium", 18: "Hard", 7: "Inter", 8: "Wet"}[
+                data["m_visual_tyre_compound"]
+            ]
+            self.write(
+                self.lap,
+                {
+                    "tyre_compound": self.tyre,
+                    "tyre_age": data["m_tyres_age_laps"],
+                },
+            )
+
+    def handle_car_damage_data(self, packet):
+        try:
+            data = packet.m_car_damage_data[_player_index(packet)].to_dict()
+        except IndexError:
+            return
+
+        for k, v in dict(data).items():
+            if isinstance(v, list) and len(v) == len(TYRES):
+                _flatten_tyre_values(data, k)
+
+        self.live(data)
+
     def handle_lap_data(self, packet):
         data = packet.m_lap_data[_player_index(packet)]
 
@@ -106,7 +151,7 @@ class PacketHandler:
                 secs, ms = divmod(total_time, 1000)
                 mins, secs = divmod(secs, 60)
                 print(
-                    f"Lap {data.m_current_lap_num}: {mins}:{secs:02}.{ms:03}",
+                    f"Lap {self.lap}: {mins}:{secs:02}.{ms:03}",
                     [f"{_ / 1000:.03f}" for _ in self.sectors],
                 )
 
@@ -115,8 +160,7 @@ class PacketHandler:
 
             self.write(self.lap, lap_data)
 
-            self.sectors[:] = [0, 0, 0]
-            self.sector = 0
+            self.on_new_lap()
 
         self.lap = data.m_current_lap_num
 
