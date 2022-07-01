@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 41.861549 41.861546"
+   height="41.861546mm"
+   width="41.861549mm">
+  <g
+     transform="translate(-39.989094,-96.922209)"
+     id="layer1">
+    <ellipse
+       ry="20.401606"
+       rx="20.401608"
+       cy="117.85298"
+       cx="60.919868"
+       id="path833"
+       style="opacity:1;fill:#1a1a1a;stroke:#303030;stroke-width:1.05833;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <circle
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#ff0202;stroke-width:3.33485;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="circle835"
+       cx="60.919868"
+       cy="117.85298"
+       r="16.452282" />
+    <text
+       transform="translate(-30.644438,-38.006585)"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:25.4px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';white-space:pre;shape-inside:url(#rect839);fill:#000000;fill-opacity:1;stroke:none;"
+       id="text837"
+       xml:space="preserve"><tspan
+         x="82.318359"
+         y="165.09311"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:25.4px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#ffffff;fill-opacity:1">S</tspan></tspan></text>
+  </g>
+</svg>
