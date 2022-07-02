@@ -5,6 +5,6 @@ INFLUXDB=$!
 
 sleep 10
 
-pipenv run python -m telemetry_f1_2021.collect
+pipenv run python -m f1_telemetry.collect
 
 kill -9 $INFLUXDB

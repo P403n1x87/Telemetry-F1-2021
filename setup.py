@@ -1,15 +1,15 @@
 import setuptools
-import telemetry_f1_2021
+import f1_telemetry
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='Telemetry-F1-2021',
-    version=telemetry_f1_2021.__version__,
+    name='F1-Telemetry',
+    version=f1_telemetry.__version__,
     author='Chris Hannam',
     author_email='ch@chrishannam.co.uk',
-    description='Decode F1 2021 telemetry data.',
+    description='Decode F1 telemetry data.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/chrishannam/Telemetry-F1-2021',
